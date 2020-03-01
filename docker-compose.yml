@@ -1,0 +1,37 @@
+﻿version: '3.3'
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./hosts:/etc/nginx/conf.d
+            - ./www:/var/www/
+            - ./logs:/var/log/nginx/
+            - ./html:/usr/share/nginx/html/
+        links:
+            - php
+    mysql:
+        image: mysql:latest
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=pgx4or2cv
+            - MYSQL_DATABASE=clean
+            - MYSQL_USER=zabik
+            - MYSQL_PASSWORD=pgx4or2cv
+        volumes:
+            - ./mysql:/var/lib/mysql
+    php:
+        build: ./images/php
+        volumes:
+            - ./www:/var/www
+        links:
+            - mysql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8090:80
+        links:
+            - mysql:db
